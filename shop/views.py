@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .PayTm import Checksum
 from .models import Product, Contact, orders, orderUpdate
 
-MERCHANT_KEY = 'T9dRDEmPnzoCfGWt'
+MERCHANT_KEY = 'YOUR-MERCHANT-KEY-HERE'
 
 
 def index(request):
@@ -162,7 +162,7 @@ def checkout(request):
 
         paytmParams["body"] = {
             "requestType": "Payment",
-            "mid": "gotSnQ74235192141604",
+            "mid": "YOUR-MERCHANT-ID-HERE",
             "websiteName": "WEBSTAGING",
             "orderId": str(order.order_id),
             "callbackUrl": "http://127.0.0.1:8000/shop/handleRequest/",
@@ -175,15 +175,15 @@ def checkout(request):
                 "custId": order.email,
             },
         }
-        checksum = Checksum.generateSignature(json.dumps(paytmParams["body"]), "T9dRDEmPnzoCfGWt")
+        checksum = Checksum.generateSignature(json.dumps(paytmParams["body"]), "YOUR-MERCHANT-KEY-HERE")
 
         paytmParams["head"] = {
             "signature": checksum
         }
         post_data = json.dumps(paytmParams)
-        Paytm_id = 'gotSnQ74235192141604'
+        Paytm_id = 'YOUR-MERCHANT-ID-HERE'
         ORDER_ID = order.order_id
-        url = f"https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=gotSnQ74235192141604&orderId={ORDER_ID}"
+        url = f"https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=YOUR-MERCHANT-ID-HERE&orderId={ORDER_ID}"
         response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
         payment_page = {
             'mid': Paytm_id,
