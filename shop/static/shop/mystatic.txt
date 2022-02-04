@@ -1,0 +1,2 @@
+hello shop vali static file h yeh
+in static files, all the static things , such as images, are kept.

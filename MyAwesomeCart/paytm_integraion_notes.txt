@@ -1,0 +1,77 @@
+# 1.) migrations-> changes in our model which are ready to be saved
+
+# 2.) whenever change made to the model, migrate those changes (python mange.py migrate)
+
+# 3.) models define the schema of our database. (Like what all fields will be there in our data,such
+# as name, phone number, ordered items etc.)
+
+# 4.) if we do a change in the database, then those changes have to be added (python manage.py makemigrations)
+# with this command changes have only been added and told that these changes are about to come. But these chnages
+# in the database are not saved yet. To save these changes, use the migrate command.
+
+# 5.) models are defined in the models.py file
+
+# 6.) after makemigrations and the migrate command, changes have been saved and applied on our database. To test these
+# changes, we can use the Django my admin panel.
+
+'''-------------------------------------------------------------------------------------------------------------------------
+Django admin panel explanation step by step
+
+1.) to view the database, control it , add product to the database etc. create the superuser
+
+python manage.py createsuperuser
+
+2.) Log in to the django administration panel. After logging in, you will not see the table you have created for
+teh app named Shop. For this , first we have to register the model. Register the model in admin.py of the shop
+app
+
+3.) After this the Product table (database) visible in the django admin panel.
+
+-----------------------------------------------------------------------------------------------------------
+ADDING THE OBJECTS OF OUR SHOP (LIKE MOUSE) FROM POWERSHELL
+
+1.) cd ~, then go to project directory in pycharm, after this python manage.py shell
+2.)in the powershell import the model from shop.models import Product (which is the name of our model)
+3.)from django.utils import timezone
+4.)get the query set of the objects in your model with the help of the command-- Product.objects.all()
+5.)Now we will add the product in the model with the help of shell commands only.
+6.)myprod=Product(product_name="mouse",category="electrical devices",sub_category="devices",price=12,
+desc="this is a very cheap mouse",pub_date=timezone.now())
+7.)the details are of an object in our Product model. These are stored in a variable named myprod. After this save the myprod
+8.) myprod.save()
+9.)Product.objects.get(product_name="mouse"), get the object from the model whose name is mouse
+10.)a=Product.objects.get(product_name="mouse"), here the object is taken from the model whose name is mouse and stored in the variable 'a'
+11.)a.subcategory will print the subcategory of the object taken from the model and stored in the variable a
+
+----------------------------------------------------------------------------------------------------------------------------'''
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+PayTM Payment Integraion: some rules and things to remember
+
+1.) if we enable the csrf token then how will paytm send a post request to our website to tell
+    that whether the payment was successful or not? Since csrf token implementation does not allows
+    the post request from any other website.
+
+2.) So for one endpoint we have to bypass csrf verification.
+
+3.) The flow of the payment is like we add all items to the cart , do the checkout, after this we click
+    on the place order button to send a post request to paytm with all the necessary details such as merchant
+    id, amount..etc.
+
+    After successfully completion of payment by the user, paytm sends a post request to our website to show
+    the status of the payment. Paytm sends the post request to an endpoint which directs to the handleRequest
+    function inside views.py file. This endpoint has to be exempted from csrf token validation.
+
+4.) After recieving the post request from checkout form, ask paytm to make the user pay the bill amount
+    and transfer that amount to your merchant id.
+
+5.) Find paytmchecksum.py file online and include in your PayTm folder. do not forget to do
+    pip install pycryptodome
+
+6.) In views.py after handling post request from checkout, create a dictionary which will be needed by paytm to
+    conduct the transaction. In the dictionary there is a key named call back url, this url means the end point where paytm
+    has to send a post request to tell the user whether the payment was succesful or not!. During testing , website
+    is webstaging.
