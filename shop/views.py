@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .PayTm import Checksum
 from .models import Product, Contact, orders, orderUpdate
 
-MERCHANT_KEY = 'YOUR-MERCHANT-KEY-HERE'
+MERCHANT_KEY = 'T9dRDEmPnzoCfGWt'
 
 
 def index(request):
@@ -77,10 +77,10 @@ def contact(request):
         name = request.POST.get('name', 'xx')
         email = request.POST.get('email', 'xx')
         phone = request.POST.get('phone', 'xx')
-        desc = request.POST.get('phone', 'xx')
+        cust_query = request.POST.get('cust_query', 'xx')
         # saving an object of the contact model after the user enters the data in form
 
-        contact = Contact(name=name, email=email, phone=phone, desc=desc)
+        contact = Contact(name=name, email=email, phone=phone, cust_query=cust_query)
         contact.save()
 
         context = {
@@ -162,7 +162,7 @@ def checkout(request):
 
         paytmParams["body"] = {
             "requestType": "Payment",
-            "mid": "YOUR-MERCHANT-ID-HERE",
+            "mid": "gotSnQ74235192141604",
             "websiteName": "WEBSTAGING",
             "orderId": str(order.order_id),
             "callbackUrl": "http://127.0.0.1:8000/shop/handleRequest/",
@@ -175,16 +175,18 @@ def checkout(request):
                 "custId": order.email,
             },
         }
-        checksum = Checksum.generateSignature(json.dumps(paytmParams["body"]), "YOUR-MERCHANT-KEY-HERE")
+        checksum = Checksum.generateSignature(json.dumps(paytmParams["body"]), "T9dRDEmPnzoCfGWt")
 
         paytmParams["head"] = {
             "signature": checksum
         }
         post_data = json.dumps(paytmParams)
-        Paytm_id = 'YOUR-MERCHANT-ID-HERE'
+        Paytm_id = 'gotSnQ74235192141604'
         ORDER_ID = order.order_id
-        url = f"https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=YOUR-MERCHANT-ID-HERE&orderId={ORDER_ID}"
+        url = f"https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid={Paytm_id}&orderId={ORDER_ID}"
+
         response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
+        print(response)
         payment_page = {
             'mid': Paytm_id,
             'txnToken': response['body']['txnToken'],
